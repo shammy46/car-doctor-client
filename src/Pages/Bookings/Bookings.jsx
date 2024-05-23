@@ -13,7 +13,32 @@ const Bookings = () => {
         fetch(url)
             .then(res => res.json())
             .then(data => setBookings(data))
-    }, [])
+    }, []);
+
+    const handleDelete = id => {
+        const proceed = confirm('Are you sure you want to delete');
+        if (proceed) {
+            fetch(`http://localhost:5000/bookings/${id}`, {
+                method: 'DELETE'
+
+            })
+                .then(res => res.json())
+                .then(data => {
+                    console.log(data);
+                    if (data.deletedCount > 0) {
+                        alert('deleted successfully');
+                        const remainning= bookings.filter(booking=> booking._id!=id);
+                        setBookings(remainning);
+                    }
+                })
+        }
+    }
+
+
+
+
+
+
     return (
         <div>
             <h2>Bookings: {bookings.length}</h2>
@@ -22,16 +47,19 @@ const Bookings = () => {
                 <table className="table">
                     {/* head */}
                     <thead>
-                        <tr>
+                        <tr className="bg-base-200">
                             <th>
                                 <label>
                                     <input type="checkbox" className="checkbox" />
                                 </label>
                             </th>
-                            <th>Name</th>
-                            <th>Job</th>
-                            <th>email</th>
-                            <th>Price</th>
+                            <th className="font-bold text-xl text-black">Image</th>
+                            <th className="font-bold text-xl text-black">Service Name</th>
+
+                            <th className="font-bold text-xl text-black">Email</th>
+                            <th className="font-bold text-xl text-black">Date</th>
+                            <th className="font-bold text-xl text-black">Price</th>
+                            <th className="font-bold text-xl text-black">Status</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -40,7 +68,8 @@ const Bookings = () => {
                             bookings.map(booking =>
                                 <BookingRow
                                     key={booking._id}
-                                    booking={booking}>
+                                    booking={booking}
+                                    handleDelete={handleDelete}>
                                 </BookingRow>)
                         }
 
